@@ -3,31 +3,41 @@ package tests;
 import base.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import pages.HomePage;
 import pages.MensJacketsPage;
 import utils.FileUtils;
 
-import java.nio.file.Paths;
 import java.util.List;
 
 public class JacketsDataTest extends BaseTest {
 
     @Test
     public void extractJacketDetails() {
+        test = extent.createTest("Extract Jacket Details");
 
-    	BaseTest base = new BaseTest();
-    	base.setup();
-        // ✅ Get jacket details
+        // Step 1: Open Home Page
+        driver.get("https://www.nba.com/warriors");
+        test.info("Opened Warriors homepage");
+
+        // Step 2: Navigate to Men's Section
+        HomePage home = new HomePage(driver);
+        home.goToMensSection();
+        test.info("Navigated to Men's section");
+
+        // Step 3: Extract Jacket Data
         MensJacketsPage jacketsPage = new MensJacketsPage(driver);
-        List<String> jacketDetails = jacketsPage.getAllJacketData();
+        List<String> jacketsData = jacketsPage.getAllJacketsData();
+        test.info("Extracted jacket data");
 
-        // ✅ Save results into test-output directory (safe for Maven/CI)
-        String filePath = Paths.get("target", "jackets_data.txt").toString();
-        FileUtils.writeToFile(jacketDetails, filePath);
+        Assert.assertTrue(jacketsData.size() > 0, "No jackets found!");
+        test.pass("Jackets found: " + jacketsData.size());
 
-        // ✅ Simple validation
-        Assert.assertTrue(jacketDetails.size() > 0, "No jacket details were extracted!");
+        // Step 4: Save to file
+        String filePath = FileUtils.writeToFile(jacketsData, "jackets.txt");
+        test.info("Saved jacket data to file: " + filePath);
 
-        // ✅ Log result
-        System.out.println("✅ Jacket data saved to: " + filePath);
+        // Step 5: Attach to Extent Report
+        test.pass("Jacket details extracted successfully")
+            .addScreenCaptureFromPath(filePath);
     }
 }

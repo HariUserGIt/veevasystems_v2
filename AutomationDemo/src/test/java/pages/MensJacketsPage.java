@@ -7,6 +7,9 @@ import java.util.*;
 
 public class MensJacketsPage {
  WebDriver driver;
+ 
+ private By list_Jackets = By.xpath("//span[.='Most Popular in Jackets']/parent::div/../..");
+ private By nextPageBtn = By.xpath("//a[@title='Next']");
 
  @FindBy(xpath = "//div[@class='product-card-title']")
  List<WebElement> jacketTitles;
@@ -26,21 +29,40 @@ public class MensJacketsPage {
 		 PageFactory.initElements(driver, this);
 	 }
 
- public List<String> getAllJacketData() 
- {
-	 List<String> jacketData = new ArrayList<>();
-	
-	 do {
-	 for (int i = 0; i < jacketTitles.size(); i++) {
-	 String title = jacketTitles.get(i).getText();
-	 String price = (i < jacketPrices.size()) ? jacketPrices.get(i).getText() : "N/A";
-	 String sellerMsg = (i < sellerMessages.size()) ? sellerMessages.get(i).getText() : "N/A";
-	
-	 jacketData.add("Title: " + title + " | Price: " + price + " | Seller Message: " + sellerMsg);
-	 }
-	 } while (goToNextPage());
-	
-	 return jacketData;
+ public List<String> getAllJacketsData() {
+     List<String> jacketsData = new ArrayList<>();
+
+     boolean hasNextPage = true;
+     while (hasNextPage) {
+         List<WebElement> jackets = driver.findElements(list_Jackets);
+
+         for (WebElement jacket : jackets) {
+             String title = jacket.findElement(By.xpath(".//h3")).getText();
+             String price = jacket.findElement(By.xpath(".//span[contains(@class,'price')]")).getText();
+             String topSeller = "";
+             try {
+                 topSeller = jacket.findElement(By.xpath(".//span[contains(text(),'Top Seller')]")).getText();
+             } catch (Exception e) {
+                 topSeller = "No Top Seller Tag";
+             }
+
+             jacketsData.add("Title: " + title + " | Price: " + price + " | Tag: " + topSeller);
+         }
+
+         // Check for pagination
+         try {
+             WebElement nextBtn = driver.findElement(nextPageBtn);
+             if (nextBtn.isDisplayed()) {
+                 nextBtn.click();
+             } else {
+                 hasNextPage = false;
+             }
+         } catch (Exception e) {
+             hasNextPage = false;
+         }
+     }
+
+     return jacketsData;
  }
 
  private boolean goToNextPage() 

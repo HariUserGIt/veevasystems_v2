@@ -1,40 +1,51 @@
 package base;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
 
-import java.util.Arrays;
-
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
+import com.aventstack.extentreports.ExtentTest;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
+import org.testng.annotations.*;
+
+import java.time.Duration;
 
 public class BaseTest {
     protected WebDriver driver;
+    protected ExtentReports extent;
+    protected ExtentTest test;
 
+    
     @BeforeClass
-    public void setup() {
-        WebDriverManager.chromedriver().setup();  // ✅ auto-downloads ChromeDriver
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get("https://www.nba.com/warriors");
-        ChromeOptions options = new ChromeOptions();
-        options.setExperimentalOption("excludeSwitches", Arrays.asList("enable-automation"));
-        options.setExperimentalOption("useAutomationExtension", false);
-        options.addArguments("--disable-blink-features=AutomationControlled");
-
-        WebDriver driver = new ChromeDriver(options);
-        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/115 Safari/537.36");
-       
+    public void setupReport() {
+        ExtentSparkReporter sparkReporter = new ExtentSparkReporter("test-output/SlideValidationReport.html");
+        extent = new ExtentReports();
+        extent.attachReporter(sparkReporter);
+        extent.setSystemInfo("Tester", "Hari");
+        extent.setSystemInfo("Environment", "QA");
     }
 
-    @AfterClass
+
+    @BeforeMethod
+    public void setup() throws InterruptedException {
+        WebDriverManager.chromedriver().setup(); // ✅ Automatically downloads and sets driver
+        driver = new ChromeDriver();
+        //driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        Thread.sleep(2000);
+        driver.manage().window().maximize();
+    }
+
+    @AfterMethod
     public void tearDown() {
         if (driver != null) {
             driver.quit();
         }
+    }
+
+    @AfterSuite
+    public void flushReport() {
+        extent.flush();
     }
 }
