@@ -1,0 +1,30 @@
+package tests;
+
+import base.BaseTest;
+import org.testng.annotations.Test;
+import pages.MensJacketsPage;
+import utils.FileUtils;
+
+import java.util.List;
+
+public class JacketsDataTest extends BaseTest {
+
+ @Test
+ public void extractJacketDetails() 
+ {
+	 driver.get("https://your-cp-homepage.com");
+	
+	 // Navigate to Shop >> Men's (you can use Actions or direct URL)
+	 // Assuming direct navigation for simplicity
+	 driver.get("https://your-cp-homepage.com/shop/mens/jackets");
+	
+	 MensJacketsPage jacketsPage = new MensJacketsPage(driver);
+	 List<String> jacketDetails = jacketsPage.getAllJacketData();
+	
+	 String filePath = "src/resources/jackets_data.txt";
+	 FileUtils.writeToFile(jacketDetails, filePath);
+	
+	 // Attach to report (if using ExtentReports or Allure, add logic here)
+	 System.out.println("Jacket data saved to: " + filePath);
+	 }
+}

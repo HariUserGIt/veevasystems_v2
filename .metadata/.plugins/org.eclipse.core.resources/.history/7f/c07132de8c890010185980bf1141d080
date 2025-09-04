@@ -1,0 +1,33 @@
+package base;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterClass;
+
+public class BaseTest {
+    protected WebDriver driver;
+
+    @BeforeClass
+    public void setup() {
+        WebDriverManager.chromedriver().setup();  // ✅ auto-downloads ChromeDriver
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        driver.get("https://www.nba.com/warriors");
+        // Switch to alert and close it
+        Alert alert = driver.switchTo().alert();
+        //alert.accept(); 
+        alert.dismiss();
+        
+    }
+
+    @AfterClass
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+}

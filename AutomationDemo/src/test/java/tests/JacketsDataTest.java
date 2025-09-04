@@ -1,0 +1,33 @@
+package tests;
+
+import base.BaseTest;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import pages.MensJacketsPage;
+import utils.FileUtils;
+
+import java.nio.file.Paths;
+import java.util.List;
+
+public class JacketsDataTest extends BaseTest {
+
+    @Test
+    public void extractJacketDetails() {
+
+    	BaseTest base = new BaseTest();
+    	base.setup();
+        // ✅ Get jacket details
+        MensJacketsPage jacketsPage = new MensJacketsPage(driver);
+        List<String> jacketDetails = jacketsPage.getAllJacketData();
+
+        // ✅ Save results into test-output directory (safe for Maven/CI)
+        String filePath = Paths.get("target", "jackets_data.txt").toString();
+        FileUtils.writeToFile(jacketDetails, filePath);
+
+        // ✅ Simple validation
+        Assert.assertTrue(jacketDetails.size() > 0, "No jacket details were extracted!");
+
+        // ✅ Log result
+        System.out.println("✅ Jacket data saved to: " + filePath);
+    }
+}
