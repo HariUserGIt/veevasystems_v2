@@ -1,5 +1,13 @@
 package tests;
 
+import java.util.concurrent.TimeUnit;
+
+import javax.xml.datatype.Duration;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -24,6 +32,7 @@ public class SlideValidationTest extends BaseTest {
 		 System.out.println("Slide " + (i + 1) + ": " + actualTitles[i]);
 		 if (i < expectedTitles.length) 
 		 {
+			 driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);;
 			 Assert.assertEquals(actualTitles[i], expectedTitles[i], "Mismatch at Slide " + (i + 1));
 			 } else 
 			 {

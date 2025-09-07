@@ -20,7 +20,7 @@ public class HomePage {
  private By mens_lbl = By.xpath("(//a[@title=\"Men's\"])[1]");
 
  By menu_lbl = By.xpath("(//li[@class='menu-item']/following::a//span)[6]");
- By newsFeature_lbl = By.xpath("(//a[@title='News & Features'])[1]");
+ By newsFeature_lbl = By.xpath("(//a[.='News & Features'])[1]");
  
  
  
@@ -38,7 +38,7 @@ public class HomePage {
 
      // Switch to new tab
      ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
-     driver.switchTo().window(tabs.get(1));
+     
  }
 
 	/*
@@ -47,17 +47,19 @@ public class HomePage {
 	 * driver.findElement(newsFeature_lbl).click(); }
 	 */
  
-	 public void hoverAndClickSubMenu() {
+	 public void hoverAndClickSubMenu() throws InterruptedException {
 		    WebDriverWait wait = new WebDriverWait(driver, 10);
 		    Actions actions = new Actions(driver);
-	
+		    
 		    // Hover over the main menu
 		    WebElement menu = wait.until(ExpectedConditions.visibilityOfElementLocated(menu_lbl));
 		    actions.moveToElement(menu).perform();
 	
 		    // Wait for the submenu to be clickable
 		    WebElement subMenu = wait.until(ExpectedConditions.elementToBeClickable(newsFeature_lbl));
+		    Thread.sleep(3000);
 		    subMenu.click();
+		    
 		}
  
 
@@ -71,7 +73,21 @@ public class HomePage {
 public String[] getSlideTitles() 
 	{	
 		// Locate the element using XPath
-	    WebElement targetElement = driver.findElement(By.xpath("//div[.='Vote Now for a Chance to Win 76ers Tickets!']"));
+	    WebElement targetElement = driver.findElement(By.xpath("//div[@class='TileHero_tileHeroContent__HRam3']"));
+	    
+		/*
+		 * JavascriptExecutor js = (JavascriptExecutor) driver;
+		 * 
+		 * // Get the page height long pageHeight = (long)
+		 * js.executeScript("return document.body.scrollHeight");
+		 * 
+		 * // Scroll down 25% of page height
+		 * js.executeScript("window.scrollBy(0, arguments[0]);", pageHeight * 0.15);
+		 */
+	    
+	    JavascriptExecutor js = (JavascriptExecutor) driver;
+	    js.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", targetElement);
+
 	
 	    // Move to the element
 	    Actions actions = new Actions(driver);

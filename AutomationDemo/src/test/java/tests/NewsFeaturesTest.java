@@ -1,5 +1,6 @@
 package tests;
 
+import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.HomePage;
@@ -12,6 +13,7 @@ public class NewsFeaturesTest extends BaseTest {
 	 public void testVideoCountOnNewsFeaturesPage() throws InterruptedException 
 	 {
 		 driver.get("https://www.nba.com/warriors");
+		 driver.findElement(By.xpath("(//div[.='x'])[2]")).click();
 		 
 		 HomePage homePage = new HomePage(driver);
 		 NewsFeaturesPage newsPage = new NewsFeaturesPage(driver);

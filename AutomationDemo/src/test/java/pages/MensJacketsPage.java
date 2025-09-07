@@ -4,6 +4,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import java.util.*;
+import java.util.NoSuchElementException;
 
 public class MensJacketsPage {
  WebDriver driver;
@@ -29,55 +30,25 @@ public class MensJacketsPage {
 		 PageFactory.initElements(driver, this);
 	 }
 
- public List<String> getAllJacketsData() {
-     List<String> jacketsData = new ArrayList<>();
+ public List<String> getMostPopularJackets(WebDriver driver) {
+	    List<String> jacketItems = new ArrayList<>();
 
-     boolean hasNextPage = true;
-     while (hasNextPage) {
-         List<WebElement> jackets = driver.findElements(list_Jackets);
+	    
+	    // Find all child elements (e.g., product titles or descriptions)
+	    List<WebElement> items = driver.findElements(By.xpath("//span[.='Most Popular in Jackets']/parent::div/../..")); // Adjust this if you know the exact tag
 
-         for (WebElement jacket : jackets) {
-             String title = jacket.findElement(By.xpath(".//h3")).getText();
-             String price = jacket.findElement(By.xpath(".//span[contains(@class,'price')]")).getText();
-             String topSeller = "";
-             try {
-                 topSeller = jacket.findElement(By.xpath(".//span[contains(text(),'Top Seller')]")).getText();
-             } catch (Exception e) {
-                 topSeller = "No Top Seller Tag";
-             }
+	    // Extract and collect non-empty text
+	    for (WebElement item : items) {
+	        String text = item.getText().trim();
+	        if (!text.isEmpty()) {
+	            jacketItems.add(text);
+	        }
+	    }
 
-             jacketsData.add("Title: " + title + " | Price: " + price + " | Tag: " + topSeller);
-         }
-
-         // Check for pagination
-         try {
-             WebElement nextBtn = driver.findElement(nextPageBtn);
-             if (nextBtn.isDisplayed()) {
-                 nextBtn.click();
-             } else {
-                 hasNextPage = false;
-             }
-         } catch (Exception e) {
-             hasNextPage = false;
-         }
-     }
-
-     return jacketsData;
+	    // Print the list
+	    jacketItems.forEach(System.out::println);
+	    return jacketItems;
+	}
  }
 
- private boolean goToNextPage() 
-	 {
-	 try {
-	 if (nextPageButton.isDisplayed()) {
-	 nextPageButton.click();
-	 Thread.sleep(2000); // Wait for page load
-	 PageFactory.initElements(driver, this); // Refresh elements
-	 return true;
-	 }
-	 } catch (Exception e) {
-	 return false;
-	 }
-	 return false;
- }
-}
 
