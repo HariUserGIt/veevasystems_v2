@@ -6,4 +6,7 @@ tests\NewsFeaturesTest.class
 utils\FileUtils.class
 utils\ExpectedTitles.class
 pages\HomePage.class
+utils\CSVUtils.class
+tests\FooterLinksTest.class
 tests\JacketsDataTest.class
+pages\FooterPage.class
