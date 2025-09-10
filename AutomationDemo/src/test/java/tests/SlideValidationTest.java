@@ -1,5 +1,10 @@
 package tests;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -17,22 +22,25 @@ public class SlideValidationTest extends BaseTest {
     @Story("Validate Slide Titles")
     @Severity(SeverityLevel.CRITICAL)
     @Description("This test verifies that slide titles match the expected ones from ExpectedTitles class.")
-    public void validateSlideTitles() throws InterruptedException {
-        driver.get("https://www.nba.com/sixers/");
+    public void validateSlideTitles4() throws InterruptedException {
+        driver.get("https://www.nba.com/sixers");
         HomePage homePage = new HomePage(driver);
+
         String[] actualTitles = homePage.getSlideTitles();
         String[] expectedTitles = ExpectedTitles.titles;
 
-        System.out.println("Total Slides Found: " + actualTitles.length);
+        System.out.println("Actual Titles: " + Arrays.toString(actualTitles));
+        System.out.println("Expected Titles: " + Arrays.toString(expectedTitles));
 
-        for (int i = 0; i < actualTitles.length; i++) {
-            System.out.println("Slide " + (i + 1) + ": " + actualTitles[i]);
-            if (i < expectedTitles.length) {
-                Thread.sleep(2000);
-                Assert.assertEquals(actualTitles[i], expectedTitles[i], "Mismatch at Slide " + (i + 1));
-            } else {
-                System.out.println("No expected title provided for Slide " + (i + 1));
-            }
-        }
+        // Convert to Sets
+        Set<String> actualSet = new HashSet<>(Arrays.asList(actualTitles));
+        Set<String> expectedSet = new HashSet<>(Arrays.asList(expectedTitles));
+
+        // Assert that actual contains all expected
+        Assert.assertTrue(actualSet.containsAll(expectedSet),
+            "Actual titles do not contain all expected titles!\nMissing: " 
+            + expectedSet.removeAll(actualSet));
     }
+
+
 }

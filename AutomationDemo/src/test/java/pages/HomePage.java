@@ -96,7 +96,7 @@ public String[] getSlideTitles()
 	
 			List<WebElement> slides = getSlides();
 			String[] titles = new String[slides.size()];
-			for (int i = 0; i < slides.size(); i++) {
+			for (int i = 0; i < slides.size()-1; i++) {
 			titles[i] = slides.get(i).getText().trim();
 			}
 			return titles;

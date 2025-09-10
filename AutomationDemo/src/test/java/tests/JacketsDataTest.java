@@ -2,6 +2,8 @@ package tests;
 
 import base.BaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.HomePage;
@@ -24,6 +26,8 @@ public class JacketsDataTest extends BaseTest {
 
         Allure.step("Step 1: Open Warriors homepage");
         driver.get("https://www.nba.com/warriors");
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("loading")));
         driver.findElement(By.xpath("(//div[.='x'])[2]")).click();
 
         Allure.step("Step 2: Navigate to Men's Section");
